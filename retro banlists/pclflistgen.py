@@ -58,12 +58,13 @@ status = 'status'
 #Filename for banlist
 filename = 'PerfectCircle.lflist.conf'
 
-def writeCard(card, outfile):
-	outfile.write("%d %d -- %s\n" % (card.get(cardId), card.get(status), card.get(name)))
+#def writeCard(card, outfile):
+#	outfile.write("%d %d -- %s\n" % (card.get(cardId), card.get(status), card.get(name)))
 
 def writeCardWithoutDB(id, status, outfile):
 	outfile.write("%d %s\n" % (id, status))
 
+#Go to the DB and get the ID of every single card
 with urllib.request.urlopen(request) as url:
 	cards = json.loads(url.read().decode()).get(data)
 	simpleCards = []
