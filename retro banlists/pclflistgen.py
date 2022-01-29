@@ -118,12 +118,16 @@ with urllib.request.urlopen(request) as url:
 		outfile.write("#[2007.9 TCG]\n")
 		outfile.write("!2007.9 TCG\n")
 		outfile.write("$whitelist\n")
+		outfile.write("#Banned\n")
 		for id in perfectCircleBannedCards:
 			writeCardWithoutDB(id, 0, outfile)
+		outfile.write("#Limited\n")
 		for id in perfectCircleLimitedCards:
 			writeCardWithoutDB(id, 1, outfile)
+		outfile.write("#Semi-Limited\n")
 		for id in perfectCircleSemiLimitedCards:
 			writeCardWithoutDB(id, 2, outfile)
+		outfile.write("#Unlimited List\n")
 		#for card in ocgCards:
 		#	writeCard(card, outfile)
 		#outfile.write("\n#Regular Banlist\n\n")
