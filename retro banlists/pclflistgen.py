@@ -1,3 +1,4 @@
+from asyncore import write
 import urllib.request, json 
 header= {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) ' 
 			'AppleWebKit/537.11 (KHTML, like Gecko) '
@@ -13,15 +14,15 @@ request = urllib.request.Request(url, None, header)
 #list of cards that are forbidden/limited according to the September 2007 TCG Banlist (see: https://yugipedia.com/wiki/September_2007_Lists_(TCG))
 #0
 perfectCircleBannedCards = [
-	]
+	504700118]
 
 #1
 perfectCircleLimitedCards = [
-	]
+	71413901]
 
 #2
 perfectCircleSemiLimitedCards = [
-	]
+	504700013]
 
 #This is a temporary fix until YGOPRODECK includes portuguese commons for OP15, OP16 and OP17 specifically
 portugueseOTSLegalCards = [
@@ -59,6 +60,9 @@ filename = 'PerfectCircle.lflist.conf'
 
 def writeCard(card, outfile):
 	outfile.write("%d %d -- %s\n" % (card.get(cardId), card.get(status), card.get(name)))
+
+def writeCardWithoutDB(id, status, outfile):
+	outfile.write("%d %s\n" % (id, status))
 
 with urllib.request.urlopen(request) as url:
 	cards = json.loads(url.read().decode()).get(data)
@@ -113,9 +117,14 @@ with urllib.request.urlopen(request) as url:
 		outfile.write("#[2007.9 TCG]\n")
 		outfile.write("!2007.9 TCG\n")
 		outfile.write("$whitelist\n")
-		outfile.write("\n#OCG Cards\n\n")
-		for card in ocgCards:
-			writeCard(card, outfile)
-		outfile.write("\n#Regular Banlist\n\n")
-		for card in simpleCards:
-			writeCard(card, outfile)
+		for id in perfectCircleBannedCards:
+			writeCardWithoutDB(id, 0, outfile)
+		for id in perfectCircleLimitedCards:
+			writeCardWithoutDB(id, 1, outfile)
+		for id in perfectCircleSemiLimitedCards:
+			writeCardWithoutDB(id, 2, outfile)
+		#for card in ocgCards:
+		#	writeCard(card, outfile)
+		#outfile.write("\n#Regular Banlist\n\n")
+		#for card in simpleCards:
+		#	writeCard(card, outfile)
