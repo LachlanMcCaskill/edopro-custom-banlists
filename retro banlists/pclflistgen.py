@@ -11,12 +11,15 @@ url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=03/08/2002&endda
 request = urllib.request.Request(url, None, header)
 
 #list of cards that are forbidden/limited according to the September 2007 TCG Banlist (see: https://yugipedia.com/wiki/September_2007_Lists_(TCG))
+#0
 perfectCircleBannedCards = [
 	]
 
+#1
 perfectCircleLimitedCards = [
 	]
 
+#2
 perfectCircleSemiLimitedCards = [
 	]
 
