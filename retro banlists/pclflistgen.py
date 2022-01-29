@@ -1,5 +1,4 @@
 import urllib.request, json 
-from datetime import datetime
 header= {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) ' 
 			'AppleWebKit/537.11 (KHTML, like Gecko) '
 			'Chrome/23.0.1271.64 Safari/537.11',
@@ -10,6 +9,16 @@ header= {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
 			'Connection': 'keep-alive'}
 url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=03/08/2002&enddate=12/31/2007&dateregion=tcg_date"
 request = urllib.request.Request(url, None, header)
+
+#list of cards that are forbidden/limited according to the September 2007 TCG Banlist (see: https://yugipedia.com/wiki/September_2007_Lists_(TCG))
+perfectCircleBannedCards = [
+	]
+
+perfectCircleLimitedCards = [
+	]
+
+perfectCircleSemiLimitedCards = [
+	]
 
 #This is a temporary fix until YGOPRODECK includes portuguese commons for OP15, OP16 and OP17 specifically
 portugueseOTSLegalCards = [
@@ -98,8 +107,9 @@ with urllib.request.urlopen(request) as url:
 				simpleCard[cardId] = variant.get(cardId)
 				ocgCards.append(simpleCard)
 	with open(filename, 'w', encoding="utf-8") as outfile:
-		outfile.write("#[Common Charity Format]\n")
-		outfile.write("!Common Charity %s.%s\n\n" % (datetime.now().month, datetime.now().year))
+		outfile.write("#[2007.9 TCG]\n")
+		outfile.write("!2007.9 TCG\n")
+		outfile.write("$whitelist\n")
 		outfile.write("\n#OCG Cards\n\n")
 		for card in ocgCards:
 			writeCard(card, outfile)
