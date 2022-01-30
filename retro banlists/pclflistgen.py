@@ -1,5 +1,3 @@
-from asyncore import write
-from queue import Empty
 import urllib.request, json 
 header= {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) ' 
 			'AppleWebKit/537.11 (KHTML, like Gecko) '
@@ -32,99 +30,23 @@ perfectCircleIllegalCards = [
 	72989439,82301904
 ]
 
-#This is a temporary fix until YGOPRODECK includes portuguese commons for OP15, OP16 and OP17 specifically
-portugueseOTSLegalCards = [
-	98259197,40391316,24040093,98024118,19439119,10118318,47395382,29905795,66976526,60470713,
-	76442347,36318200,15941690,88552992,4192696,2461031,16550875,69207766,90576781,21179143,
-	64514622,3300267,31516413,78033100,41639001,13140300,8611007,51555725,38492752,32761286]
-
-#(C) is common, (SP) is Short Print, (SSP) is Super Short Print, (DNPR) is Duel Terminal common
-legalRarities = ['(C)', '(SP)', '(SSP)', '(DNPR)']
-
-#Banlist status
-banned = 'Banned'
-limited = 'Limited'
-semi = 'Semi-Limited'
-
-#YGOPRODECK API keys
-data = 'data'
-card_sets = 'card_sets'
-banlist_info = 'banlist_info'
-ban_tcg = 'ban_tcg'
-rarity_code = 'set_rarity_code'
-card_images = 'card_images'
-cardType = 'type'
-
-#Token stuff
-token = 'Token'
-
-#My keys
-name = 'name'
-cardId = 'id'
-status = 'status'
-
 #Filename for banlist
 filename = 'PerfectCircle.lflist.conf'
-
-#def writeCard(card, outfile):
-#	outfile.write("%d %d -- %s\n" % (card.get(cardId), card.get(status), card.get(name)))
 
 def writeCardWithoutDB(id, status, outfile):
 	outfile.write("%d %s\n" % (id, status))
 
 #Go to the DB and get the ID of every single card
 with urllib.request.urlopen(request) as url:
-	cards = json.loads(url.read().decode()).get(data)
+	cards = json.loads(url.read().decode()).get('data')
 	legalCards = []
 	simpleCards = []
 	ocgCards = []
 	for card in cards:
-		if card.get(card_sets) != None:
-			images = card.get(card_images)
+		if card.get('card_sets') != None:
+			images = card.get('card_images')
 			for variant in images:
-				legalCards.append(variant.get(cardId))
-			banInfo = card.get(banlist_info)
-			banTcg = 3
-			if (banInfo == None):
-				banTcg = 3	
-			if (banInfo != None):
-				banlistStatus = banInfo.get(ban_tcg)
-				if (banlistStatus == None):
-					banTcg = 3
-				if (banlistStatus == banned):
-					banTcg = 0
-				if (banlistStatus == limited):
-					banTcg = 1
-				if (banlistStatus == semi):
-					banTcg = 2
-			cardSets = card.get(card_sets)
-			hasCommonPrint = False
-			for printing in cardSets:
-				if printing.get(rarity_code) in legalRarities:
-					hasCommonPrint = True
-
-			#Portuguese fix, remove as soon as YGOPRODECK adds portuguese OTS support
-			if not hasCommonPrint:
-				if card.get(cardId) in portugueseOTSLegalCards:
-					hasCommonPrint = True
-
-			if not hasCommonPrint:
-				banTcg = -1
-
-			if (banTcg<3):
-				for variant in images:
-					simpleCard = {}
-					simpleCard[name] = card.get(name)
-					simpleCard[status] = banTcg
-					simpleCard[cardId] = variant.get(cardId)
-					simpleCards.append(simpleCard)
-		if (card.get(card_sets)) == None and card.get(cardType) != token:
-			simpleCard = {}
-			simpleCard[name] = card.get(name)
-			simpleCard[status] = -1
-			for variant in card.get(card_images):
-				simpleCard[cardId] = variant.get(cardId)
-				ocgCards.append(simpleCard)
+				legalCards.append(variant.get('id'))
 	with open(filename, 'w', encoding="utf-8") as outfile:
 		outfile.write("#[2007.9 Perfect Circle (TCG)]\n")
 		outfile.write("!2007.9 Perfect Circle (TCG)\n")
@@ -143,11 +65,13 @@ with urllib.request.urlopen(request) as url:
 		for id in legalCards:
 			if(id not in perfectCircleBannedCards):
 				writeCardWithoutDB(id, 3, outfile)
+				break
+			elif(id not in perfectCircleLimitedCards):
+				writeCardWithoutDB(id, 3, outfile)
+				break
+			elif(id not in perfectCircleSemiLimitedCards):
+				writeCardWithoutDB(id, 3, outfile)
+				break
 		outfile.write("#Illegal Cards\n")
 		for id in perfectCircleIllegalCards:
 			writeCardWithoutDB(id, -1, outfile)
-		#for card in ocgCards:
-		#	writeCard(card, outfile)
-		#outfile.write("\n#Regular Banlist\n\n")
-		#for card in simpleCards:
-		#	writeCard(card, outfile)
