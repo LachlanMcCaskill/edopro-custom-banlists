@@ -40,8 +40,6 @@ def writeCardWithoutDB(id, status, outfile):
 with urllib.request.urlopen(request) as url:
 	cards = json.loads(url.read().decode()).get('data')
 	legalCards = []
-	simpleCards = []
-	ocgCards = []
 	for card in cards:
 		if card.get('card_sets') != None:
 			images = card.get('card_images')
