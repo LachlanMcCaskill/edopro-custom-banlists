@@ -61,15 +61,9 @@ with urllib.request.urlopen(request) as url:
 		outfile.write("#Unlimited List\n")
 		#print(legalCards[0]);
 		for id in legalCards:
-			if(id not in perfectCircleBannedCards):
+			if((id not in perfectCircleBannedCards) and (id not in perfectCircleLimitedCards) 
+			and (id not in perfectCircleSemiLimitedCards)):
 				writeCardWithoutDB(id, 3, outfile)
-				break
-			elif(id not in perfectCircleLimitedCards):
-				writeCardWithoutDB(id, 3, outfile)
-				break
-			elif(id not in perfectCircleSemiLimitedCards):
-				writeCardWithoutDB(id, 3, outfile)
-				break
 		outfile.write("#Illegal Cards\n")
 		for id in perfectCircleIllegalCards:
 			writeCardWithoutDB(id, -1, outfile)
