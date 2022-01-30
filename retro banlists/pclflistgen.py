@@ -7,7 +7,7 @@ header= {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
 			'Accept-Encoding': 'none',
 			'Accept-Language': 'en-US,en;q=0.8',
 			'Connection': 'keep-alive'}
-url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=03/08/2002&enddate=12/31/2007&dateregion=tcg_date"
+url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?&startdate=03/08/2002&enddate=01/26/2008&dateregion=tcg_date"
 request = urllib.request.Request(url, None, header)
 
 #list of cards that are forbidden/limited according to the September 2007 TCG Banlist (see: https://yugipedia.com/wiki/September_2007_Lists_(TCG))
